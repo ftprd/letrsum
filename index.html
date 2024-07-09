@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Letrsum｜ft.</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="https://ftprd.github.io/ftprd_logo.png">
+</head>
+<body>
+
+    <section class="description">
+        <div class="ttl_container">
+            <p class="ttl">Letrsum</p>
+            <p class="sttl">文字数カウンター</p>
+        </div>
+        <div class="howto">
+            <p>
+                左下の入力欄にテキストを入力してください｡<br>
+                入力され次第、右下の表にそれぞれの文字数が表示されます｡<br>
+                ツールバーで、コピー・取り消し・全消去ができます｡
+            </p>
+        </div>
+    </section>
+
+    <section class="main">
+        <div class="input container">
+            <textarea id="input" placeholder="カウントするテキストを入力…"></textarea>
+
+            <div class="toolbar">
+                <!-- <p class="tool_paste" title="ペースト（Paste）">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h167q11-35 43-57.5t70-22.5q40 0 71.5 22.5T594-840h166q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560h-80v120H280v-120h-80v560Zm280-560q17 0 28.5-11.5T520-800q0-17-11.5-28.5T480-840q-17 0-28.5 11.5T440-800q0 17 11.5 28.5T480-760Z"/></svg>
+                </p> -->
+                <p class="tool_copy" title="コピー（Copy）">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M360-240q-33 0-56.5-23.5T280-320v-480q0-33 23.5-56.5T360-880h360q33 0 56.5 23.5T800-800v480q0 33-23.5 56.5T720-240H360Zm0-80h360v-480H360v480ZM200-80q-33 0-56.5-23.5T120-160v-560h80v560h440v80H200Zm160-240v-480 480Z"/></svg>
+                </p>
+                <p class="tool_undo" title="取り消し（Undo）">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M280-200v-80h284q63 0 109.5-40T720-420q0-60-46.5-100T564-560H312l104 104-56 56-200-200 200-200 56 56-104 104h252q97 0 166.5 63T800-420q0 94-69.5 157T564-200H280Z"/></svg>
+                </p>
+                <p class="tool_erase" title="全消去（All Erase）">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
+                </p>
+            </div>
+
+            <div class="tool_erase_really">
+                <p>本当に全消去しますか？</p>
+                <div class="erase_btns">
+                    <div class="erase_btn_no">NO</div>
+                    <div class="erase_btn_yes">YES</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="output container">
+
+            <div class="counter_main">
+                <p class="ttl">空白 ○｜改行 ✕</p>
+                <p class="counter_less_n">0</p>
+            </div>
+            <table>
+                <tr>
+                    <td>空白・改行 ○</td>
+                    <td class="counter_all">0</td>
+                </tr>
+                <tr>
+                    <td>空白・改行 ✕</td>
+                    <td class="counter_less_sn">0</td>
+                </tr>
+                <tr>
+                    <td>行数</td>
+                    <td class="counter_lines">1</td>
+                </tr>
+                <tr>
+                    <td>原稿用紙（20×20=400字）</td>
+                    <td class="counter_scripts">1</td>
+                </tr>
+            </table>
+        </div>
+
+    </section>
+
+
+    <p class="copyright">
+        &copy; 2024 ftprd
+        <a href="https://ftprd.github.io"><img src="https://ftprd.github.io/ftprd_logo_b.png" alt=""></a>
+    </p>
+
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function() {
+            let undo_stack = [];
+
+            //ツールバー：ペースト
+            // $('.tool_paste').on('click', async function() {
+            //     navigator.clipboard.readText()
+            //         .then(text => {
+            //             $('#input').val(text);
+            //         })
+            //         .catch(err => {
+            //             console.error('ミスった！： ', err);
+            //         });
+            // });
+
+            //ツールバー：コピー
+            $('.tool_copy').on('click', async function() {
+                const valueToCopy = $('#input').val();
+                const tempTextarea = $('<textarea>').val(valueToCopy).appendTo('body').select();
+                document.execCommand('copy');
+                tempTextarea.remove();
+            });
+
+            //ツールバー：全消去
+            $('.tool_erase').on('click', async function() {
+                $('.tool_erase_really').addClass('active');
+            });
+            $('.erase_btn_no').on('click', function() {
+                $('.tool_erase_really').removeClass('active');
+            })
+            $('.erase_btn_yes').on('click', function() {
+                let eraseVal = $('#input').val();
+                $('#input').val('');
+                count();
+                $('.tool_erase_really').removeClass('active');
+            })
+
+
+            //カウント
+            $('#input').on('input', function() {
+                undo_stack.push($('#input').val());
+                count();
+            })
+            
+
+            //取り消し
+            $('.tool_undo').on('click', function() {
+                undo();
+                count();
+            })
+
+            function undo() {
+                if (undo_stack.length >= 0) {
+                    const undo_value = undo_stack.pop();
+                    $('#input').val(undo_value);
+                    count(undo_value);
+                }
+            }
+
+            function count() {
+                const counter = $('#input').val().length;
+                const counterLessN = $('#input').val().replace(/(\r\n|\n|\r)/gm, '').length;
+                const counterLessSN = $('#input').val().replace(/\s+/g, '').length;
+                const counterLines = $('#input').val().split(/\r\n|\r|\n/).length;
+                const counterScripts = Math.ceil(counter / 400);
+
+                $('.counter_all').text(counter);
+                $('.counter_less_n').text(counterLessN);
+                $('.counter_less_sn').text(counterLessSN);
+                $('.counter_lines').text(counterLines);
+                $('.counter_scripts').text(counterScripts);
+            }
+        })
+    </script>
+</body>
+</html>
