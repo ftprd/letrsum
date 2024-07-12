@@ -259,7 +259,7 @@ p.copyright a img {
   width: 32px;
 }
 
-@media (max-width: 720px) {
+@media (max-width: 1300px) {
   section.description .howto {
     display: none;
   }
