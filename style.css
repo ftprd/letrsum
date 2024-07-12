@@ -16,7 +16,7 @@ html {
 }
 
 body {
-  width: calc(100vw - 10px);
+  width: 100vw;
   background-color: #fff;
 }
 body::-webkit-scrollbar {
@@ -257,4 +257,27 @@ p.copyright a {
 }
 p.copyright a img {
   width: 32px;
+}
+
+@media (max-width: 720px) {
+  section.description .howto {
+    display: none;
+  }
+  section.main {
+    display: block;
+  }
+  section.main .container {
+    width: 80vw;
+  }
+  section.main .input {
+    margin-inline: auto;
+    height: 40vh !important;
+  }
+  section.main .output {
+    margin-inline: auto;
+    height: 48vh !important;
+  }
+  section.main .output table tr td:first-child {
+    padding-left: 1.5em;
+  }
 }/*# sourceMappingURL=style.css.map */
